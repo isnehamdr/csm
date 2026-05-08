@@ -13,7 +13,7 @@ const services = [
   },
   {
     id: "02",
-    label: "Hospitality ",
+    label: "Hospitality",
     image: "/images/s1.avif",
     desc: "Elevate your hospitality services with our software, which streamlines booking processes and enhances customer service. Manage reservations, guest check-ins, and personalized communications to ensure a memorable experience for every guest.",
   },
@@ -81,16 +81,17 @@ export const Solutions = () => {
   const headerRef = useRef(null);
   const trackRef = useRef(null);
   const cardRefs = useRef([]);
+
   const [expanded, setExpanded] = useState(false);
+
+  // Mobile active card
+  const [activeCard, setActiveCard] = useState(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headerRef.current,
-        {
-          y: 30,
-          opacity: 0,
-        },
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
@@ -99,16 +100,14 @@ export const Solutions = () => {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 85%",
+            toggleActions: "restart none none reset",
           },
         }
       );
 
       gsap.fromTo(
         cardRefs.current,
-        {
-          y: 60,
-          opacity: 0,
-        },
+        { y: 60, opacity: 0 },
         {
           y: 0,
           opacity: 1,
@@ -118,6 +117,7 @@ export const Solutions = () => {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 80%",
+            toggleActions: "restart none none reset",
           },
         }
       );
@@ -147,10 +147,11 @@ export const Solutions = () => {
 
   return (
     <section
+      id="solutions"
       ref={sectionRef}
-      className="w-full overflow-hidden bg-white px-4 py-24 sm:px-6 md:px-10 lg:px-12"
+      className="w-full overflow-hidden bg-[#f8faff] px-4 py-16 sm:px-6 sm:py-20 md:px-10 lg:px-12 lg:py-24"
     >
-      {/* HEADER */}
+      {/* Header */}
       <div
         ref={headerRef}
         className="mb-12 flex flex-col gap-3 md:mb-16"
@@ -166,11 +167,11 @@ export const Solutions = () => {
         </h2>
       </div>
 
-      {/* CARDS */}
-      <div className="overflow-hidden">
+      {/* Cards */}
+      <div className="overflow-hidden pb-4">
         <div
           ref={trackRef}
-          className="flex gap-4 will-change-transform sm:gap-5 lg:gap-7"
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto will-change-transform [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:gap-5 lg:gap-7 lg:overflow-visible"
         >
           {services.map((service, i) => {
             const config = cardConfigs[i];
@@ -179,63 +180,80 @@ export const Solutions = () => {
               <div
                 key={service.id}
                 ref={(el) => (cardRefs.current[i] = el)}
-                className={`flex shrink-0 flex-col gap-3
-                  w-[85%]
-                  sm:w-[48%]
-                  lg:w-[23%]
-                  ${
-                    !config.labelBelow
-                      ? "mt-10 lg:mt-16"
-                      : "mt-0"
-                  }
-                `}
+                className={`flex snap-center shrink-0 flex-col gap-3 w-[88%] sm:w-[48%] lg:w-[23%]
+                ${
+                  !config.labelBelow
+                    ? "mt-10 lg:mt-16"
+                    : "mt-0"
+                }`}
               >
-                {/* LABEL TOP */}
+                {/* Top Label */}
                 {!config.labelBelow && (
                   <p className="truncate text-xs font-medium tracking-wide text-[#1e2e69] md:text-sm">
                     {service.id}. {service.label}
                   </p>
                 )}
 
-               {/* FLIP CARD */}
-<div
-  className="group relative h-[260px] w-full cursor-pointer sm:h-[320px] lg:h-[380px]"
-  style={{ perspective: "1200px" }}
->
-  <div
-    className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
-  >
-    {/* FRONT IMAGE — clipPath applied HERE only */}
-    <div
-      className="absolute inset-0 overflow-hidden [backface-visibility:hidden]"
-      style={{ clipPath: config.clipPath }}
-    >
-      <img
-        src={service.image}
-        alt={service.label}
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      <div className="absolute inset-0 bg-black/20" />
-    </div>
+                {/* Card */}
+                <div
+                  className="group relative h-[240px] w-full cursor-pointer sm:h-[320px] lg:h-[380px]"
+                  style={{ perspective: "1200px" }}
+                  onClick={() =>
+                    setActiveCard(
+                      activeCard === i ? null : i
+                    )
+                  }
+                >
+                  <div
+                    className={`relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d]
+                    
+                    ${
+                      activeCard === i
+                        ? "[transform:rotateY(180deg)]"
+                        : ""
+                    }
 
-    {/* BACK CONTENT — no clipPath, clean rectangle */}
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1e2e69] p-6 text-center text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
-      <span className="mb-3 text-sm tracking-[0.25em] text-blue-300">
-        {service.id}
-      </span>
+                    lg:group-hover:[transform:rotateY(180deg)]`}
+                  >
+                    {/* Front */}
+                    <div
+                      className="absolute inset-0 overflow-hidden [backface-visibility:hidden]"
+                      style={{
+                        clipPath: config.clipPath,
+                      }}
+                    >
+                      <img
+                        src={service.image}
+                        alt={service.label}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
 
-      <h3 className="mb-4 text-2xl font-semibold leading-snug text-white">
-        {service.label}
-      </h3>
+                      <div className="absolute inset-0 bg-black/20" />
 
-      <p className="text-md leading-relaxed text-white">
-        {service.desc}
-      </p>
-    </div>
-  </div>
-</div>
+                      {/* Mobile Hint */}
+                      <div className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-[10px] text-white lg:hidden">
+                        Tap to explore
+                      </div>
+                    </div>
 
-                {/* LABEL BOTTOM */}
+                    {/* Back */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1e2e69] p-3 text-center text-white sm:p-5 lg:p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                      <span className="mb-2 text-xs tracking-[0.25em] text-blue-300 sm:mb-3 sm:text-sm">
+                        {service.id}
+                      </span>
+
+                      <h3 className="mb-2 text-lg font-semibold leading-snug text-white sm:mb-4 sm:text-2xl">
+                        {service.label}
+                      </h3>
+
+                      <p className="text-xs leading-relaxed text-white sm:text-sm lg:text-base">
+                        {service.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Label */}
                 {config.labelBelow && (
                   <p className="truncate text-xs font-medium tracking-wide text-[#1e2e69] md:text-sm">
                     {service.id}. {service.label}
@@ -247,16 +265,15 @@ export const Solutions = () => {
         </div>
       </div>
 
-      {/* BUTTON */}
+      {/* Button */}
       <div className="mt-10 flex justify-end">
         <button
           onClick={handleToggle}
-          className="group flex items-center gap-3 text-sm font-medium text-[#1e2e69] transition-opacity duration-300 hover:opacity-70"
+          className="group hidden cursor-pointer items-center gap-3 text-sm font-medium text-[#1e2e69] transition-opacity duration-300 hover:opacity-70 sm:flex"
         >
           <span
-            className={`flex h-10 w-10 items-center justify-center rounded-full bg-[#1e2e69] transition-all duration-500 group-hover:scale-110 ${
-              expanded ? "rotate-180" : "rotate-0"
-            }`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full bg-[#1e2e69] transition-all duration-500 group-hover:scale-110
+            ${expanded ? "rotate-180" : "rotate-0"}`}
           >
             <svg
               viewBox="0 0 200 200"

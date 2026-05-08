@@ -34,38 +34,30 @@ const services = [
 
 export const About = () => {
   const sectionRef = useRef(null);
-  const imgRef = useRef(null);
   const textBlockRef = useRef(null);
   const itemsRef = useRef([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        imgRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        }
-      );
-
+      // Text animation only
       gsap.fromTo(
         textBlockRef.current,
         { x: 40, opacity: 0 },
         {
           x: 0,
           opacity: 1,
-          duration: 1.0,
+          duration: 1,
           ease: "power3.out",
           delay: 0.15,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            toggleActions: "restart none none reset",
+          },
         }
       );
 
-      // Stagger each numbered item
+      // Services animation only
       gsap.fromTo(
         itemsRef.current,
         { y: 20, opacity: 0 },
@@ -76,7 +68,11 @@ export const About = () => {
           ease: "power3.out",
           stagger: 0.1,
           delay: 0.4,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "restart none none reset",
+          },
         }
       );
     });
@@ -86,104 +82,73 @@ export const About = () => {
 
   return (
     <section
+      id="about"
       ref={sectionRef}
-      className="w-full bg-white py-24"
-   
+      className="w-full py-16 sm:py-20 lg:py-24"
     >
-      <div className="flex flex-col md:flex-row items-stretch w-full">
-
-        {/* ══ LEFT — Image with top-right notch ══ */}
-        <div
-          className="w-full md:w-[45%] shrink-0"
-       
-        >
+      <div className="flex w-full flex-col items-stretch gap-8 md:flex-row md:gap-0">
+        
+        {/* Image Section - No GSAP */}
+        <div className="w-full shrink-0 md:w-[52%]">
           <div
-            ref={imgRef}
-            className="w-full overflow-hidden"
+            className="w-full overflow-hidden rounded-xl md:rounded-none"
             style={{
               height: "clamp(320px, 42vw, 520px)",
-              clipPath: `polygon(
-                0% 0%,
-                75% 0%,
-                75% 20%,
-                100% 20%,
-                100% 100%,
-                0% 100%
-              )`,
               borderRadius: "0 0 10px 10px",
             }}
           >
             <img
               src="/images/about.avif"
               alt="About Us"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover md:[clip-path:polygon(0%_0%,82%_0%,82%_18%,100%_18%,100%_100%,18%_100%,18%_82%,0%_82%)]"
               style={{ objectPosition: "86% 37%" }}
             />
           </div>
         </div>
 
-        {/* ══ RIGHT — Text content ══ */}
+        {/* Content Section */}
         <div
           ref={textBlockRef}
-          className="flex flex-col w-full "
+          className="flex w-full flex-col"
           style={{
-            paddingLeft: "clamp(24px, 4vw, 64px)",
-            paddingRight: "clamp(24px, 5vw, 80px)",
-            paddingTop: "clamp(32px, 2vw, 0px)",
+            paddingLeft: "clamp(16px, 4vw, 64px)",
+            paddingRight: "clamp(16px, 5vw, 80px)",
+            paddingTop: "clamp(8px, 2vw, 0px)",
             gap: "clamp(10px, 1.5vw, 18px)",
           }}
         >
-          {/* Label */}
-          <p
-            className="text-sm font-medium uppercase tracking-[0.2em] text-[#1e2e69]"
-            // style={{
-          
-            //   letterSpacing: "0.04em",
-        
-            // }}
-          >
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#1e2e69]">
             About Us
           </p>
 
-          {/* Heading */}
-          <h2
-            className="text-[#1e2e69] leading-tight uppercase font-semibold text-3xl md:text-4xl"
-            // style={{
-        
-       
-         
-            //   letterSpacing: "-0.01em",
-            // }}
-          >
+          <h2 className="text-3xl font-semibold uppercase leading-tight text-[#1e2e69] sm:text-4xl lg:text-5xl">
             Simple Solutions!
           </h2>
 
-          {/* Divider */}
-          <div className="bg-gray-200" style={{ height: "1px", width: "100%" }} />
+          <div
+            className="bg-gray-200"
+            style={{ height: "1px", width: "100%" }}
+          />
 
-          {/* Intro paragraph */}
-          <p
-            className="text-gray-500 leading-relaxed text-md"
-      
-    
-          >
+          <p className="text-sm leading-relaxed text-gray-500 sm:text-base">
             We specialize in developing tailored software solutions that address
             the unique needs of businesses across various industries. Our focus
             on quality and innovation drives us to collaborate closely with
             clients to deliver effective IT solutions.
           </p>
 
-          {/* Numbered service items */}
-          <div className="flex flex-col" style={{ gap: "clamp(10px, 1.4vw, 16px)", marginTop: "4px" }}>
+          <div
+            className="mt-1 flex flex-col"
+            style={{ gap: "clamp(10px, 1.4vw, 16px)" }}
+          >
             {services.map((item, i) => (
               <div
                 key={item.number}
                 ref={(el) => (itemsRef.current[i] = el)}
-                className="flex items-start gap-4"
+                className="flex items-start gap-3 sm:gap-4"
               >
-                {/* Number */}
                 <span
-                  className="text-[#1e2e69] shrink-0 font-light leading-none"
+                  className="shrink-0 leading-none text-[#1e2e69]"
                   style={{
                     fontSize: "clamp(1rem, 1.6vw, 1.3rem)",
                     fontFamily: "'Helvetica Neue', Arial, sans-serif",
@@ -194,16 +159,14 @@ export const About = () => {
                   {item.number}
                 </span>
 
-                {/* Thin divider line */}
                 <div
-                  className="shrink-0 bg-gray-300 self-stretch"
+                  className="shrink-0 self-stretch bg-gray-300"
                   style={{ width: "1px", minHeight: "100%" }}
                 />
 
-                {/* Title + desc */}
                 <div className="flex flex-col gap-0.5">
                   <p
-                    className="text-[#1e2e69] font-semibold leading-snug"
+                    className="font-semibold leading-snug text-[#1e2e69]"
                     style={{
                       fontSize: "clamp(0.82rem, 1.1vw, 0.92rem)",
                       fontFamily: "'Helvetica Neue', Arial, sans-serif",
@@ -211,8 +174,9 @@ export const About = () => {
                   >
                     {item.title}
                   </p>
+
                   <p
-                    className="text-gray-500 leading-relaxed"
+                    className="leading-relaxed text-gray-500"
                     style={{
                       fontSize: "clamp(0.76rem, 1vw, 0.85rem)",
                       fontFamily: "'Helvetica Neue', Arial, sans-serif",
@@ -224,9 +188,8 @@ export const About = () => {
               </div>
             ))}
           </div>
-
-    
         </div>
+
       </div>
     </section>
   );

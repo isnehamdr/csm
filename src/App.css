@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+html {
+  overflow-x: clip;
+}
+
 body {
   @apply bg-[#ffffff];
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+#root {
+  overflow-x: clip;
 }
 
 @font-face {

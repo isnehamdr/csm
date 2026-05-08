@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  @apply bg-[#ffffff];
+  overflow-x: clip;
+}
+
+#root {
+  overflow-x: clip;
+}
+
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url('/resources/fonts/HelveticaNeue.otf') format('truetype');
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'HelveticaNeue-Bold';
+  src: url('/resources/fonts/HelveticaNeue-Bold.otf') format('truetype');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'HelveticaNeue-light';
+  src: url('/resources/fonts/Helvetica-light.otf') format('truetype');
+  font-weight: light;
+}
+
+ h2{
+  font-family: 'HelveticaNeue-Bold', sans-serif;
+}
+ h1{
+  font-family: 'HelveticaNeue', sans-serif;
+}
+p{
+  font-family: 'HelveticaNeue-light', sans-serif;
+}
+button{
+  font-family: 'HelveticaNeue', sans-serif;
+  cursor: pointer;
+}
+a{
+  cursor: pointer;
+}

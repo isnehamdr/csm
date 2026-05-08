@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Hero = () => {
   const textRef = useRef(null);
@@ -13,127 +16,84 @@ export const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Brand: slides in from the RIGHT (x: 100% → 0) slowly
-      gsap.fromTo(
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#home",
+          start: "top 75%",
+          end: "bottom top",
+          toggleActions: "restart none none reset",
+        },
+      });
+
+      tl.fromTo(
         brandWrapRef.current,
-        {
-          x: "100%",
-          opacity: 0,
-        },
-        {
-          x: "0%",
-          opacity: 1,
-          duration: 1.6,
-          ease: "power3.out",
-          delay: 0.4,
-        }
-      );
+        { x: "100%", opacity: 0 },
+        { x: "0%", opacity: 1, duration: 1.2, ease: "power3.out" }
+      )
+        .fromTo(
+          scrollRef.current,
+          {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+            opacity: 0,
+          },
+          {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+          },
+          "-=0.7"
+        )
+        .fromTo(
+          imageRef.current,
+          { rotateX: 90, opacity: 0, transformOrigin: "top center" },
+          { rotateX: 0, opacity: 1, duration: 1.3, ease: "power4.out" },
+          "-=0.45"
+        )
+        .fromTo(
+          contentBoxRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
+          "-=0.55"
+        )
+        .fromTo(
+          textRef.current,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.5"
+        )
+        .fromTo(
+          buttonRef.current,
+          { scale: 0.85, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
+          "-=0.35"
+        );
 
-      // Scroll indicator: clip reveal from top
-      gsap.fromTo(
-        scrollRef.current,
-        {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          opacity: 0,
-        },
-        {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-          delay: 1,
-        }
-      );
-
-      // Arrow bounce
       gsap.to(arrowRef.current, {
         y: 10,
         repeat: -1,
         yoyo: true,
         duration: 1,
         ease: "sine.inOut",
-        delay: 1.5,
+        delay: 1.2,
       });
-
-      // Image reveal: rotateX from 90deg
-      gsap.fromTo(
-        imageRef.current,
-        {
-          rotateX: 90,
-          opacity: 0,
-          transformOrigin: "top center",
-        },
-        {
-          rotateX: 0,
-          opacity: 1,
-          duration: 1.3,
-          ease: "power4.out",
-          delay: 0.1,
-        }
-      );
-
-      // Content box
-      gsap.fromTo(
-        contentBoxRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", delay: 0.7 }
-      );
-
-      // Heading
-      gsap.fromTo(
-        textRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.9 }
-      );
-
-      // Button
-      gsap.fromTo(
-        buttonRef.current,
-        { scale: 0.85, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)", delay: 1.1 }
-      );
     });
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-white">
-
-      {/* ── Scroll Down — far left ── */}
+    <section id="home" className="relative min-h-screen w-full overflow-hidden bg-white">
       <div
         ref={scrollRef}
         className="absolute left-0 top-0 bottom-0 z-20 hidden w-[44px] flex-col items-center justify-end pb-10 md:flex"
-      >
-        <div className="flex flex-col items-center gap-3">
-          <div ref={arrowRef}>
-            <svg
-              width="20"
-              height="130"
-              viewBox="86.9 20 26 160.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M101.1 30.2c2.2-.6 3.9-2.6 3.9-5s-2.3-5.2-5.2-5.2-5.2 2.3-5.2 5.2 1.8 4.6 4.2 5.1v145.5l-10.3-10.3-1.6 1.6 12.2 12.2.8.8.8-.8 12.2-12.2-1.6-1.6-10.3 10.3V30.2Z"
-                fill="#1e2e69"
-                fillRule="evenodd"
-              />
-            </svg>
-          </div>
-          <span className="rotate-180 text-[11px] font-medium tracking-[0.18em] text-[#1e2e69] [writing-mode:vertical-rl]">
-            Scroll Down
-          </span>
-        </div>
-      </div>
+      />
 
-      {/* ── Main Layout ── */}
-      <div className="flex min-h-screen w-full pl-[44px]">
-
-        {/* ── Image Section ── */}
-        <div className="relative flex-1" style={{ perspective: "1200px" }}>
+      <div className="flex min-h-screen w-full px-4 pt-20 sm:px-6 md:px-10 lg:px-12 lg:pt-24">
+        <div className="relative min-h-[70vh] flex-1 sm:min-h-[78vh] lg:min-h-0" style={{ perspective: "1200px" }}>
           <div
             ref={imageRef}
-            className="absolute inset-y-[30px] left-0 right-0 overflow-hidden bg-gradient-to-br from-[#dde3ff] via-[#9ba8f8] to-[#5a62d6]"
+            className="absolute inset-y-[12px] left-0 right-0 overflow-hidden bg-gradient-to-br from-[#dde3ff] via-[#9ba8f8] to-[#5a62d6] sm:inset-y-[18px] lg:inset-y-[30px]"
             style={{
               clipPath: `polygon(
                 0% 0%,
@@ -141,40 +101,35 @@ export const Hero = () => {
                 96% 22%,
                 100% 22%,
                 100% 100%,
-                18% 100%,
-                18% 72%,
-                0% 72%
+                10% 100%,
+                10% 92%,
+                0% 92%
               )`,
             }}
           >
-            <img
-              src="/images/hero2.jpg"
-              alt="Hero"
-              className="h-full w-full object-cover object-center"
-            />
+            <img src="/images/hero2.jpg" alt="Hero" className="h-full w-full object-cover object-center" />
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(195,205,255,0.55)_0%,rgba(88,96,213,0.35)_100%)] mix-blend-multiply" />
           </div>
 
-          {/* ── Content Box ── */}
           <div
             ref={contentBoxRef}
-            className="absolute bottom-[30px] left-[-30px] z-10 flex flex-col gap-2"
+            className="absolute bottom-6 left-3 right-3 z-10 flex flex-col gap-2 rounded-2xl bg-white/82 backdrop-blur-sm sm:bottom-8 sm:left-4 sm:right-auto sm:max-w-[360px] lg:bottom-auto lg:left-0 lg:right-auto lg:top-[92px] lg:rounded-none lg:bg-transparent lg:backdrop-blur-0"
             style={{
-              width: "clamp(200px, 30%, 320px)",
+              width: "clamp(220px, 72vw, 320px)",
               padding: "clamp(18px, 2.8vw, 36px)",
             }}
           >
             <h1
               ref={textRef}
               className="font-bold leading-snug text-[#1e2e69]"
-              style={{ fontSize: "clamp(0.9rem, 1.7vw, 1.2rem)" }}
+              style={{ fontSize: "clamp(1.45rem, 5vw, 1.95rem)" }}
             >
               Your Journey to a Digital Future. Our IT Solutions, Tailored to Your Needs.
             </h1>
 
             <button
               ref={buttonRef}
-              className="group flex w-fit items-center gap-2 font-semibold text-[#1e2e69]"
+              className="group flex w-fit cursor-pointer items-center gap-2 font-semibold text-[#1e2e69]"
               style={{ fontSize: "clamp(0.78rem, 1.1vw, 0.92rem)" }}
             >
               <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#1e2e69] transition-transform duration-300 group-hover:scale-110">
@@ -190,13 +145,8 @@ export const Hero = () => {
           </div>
         </div>
 
-        {/* ── Vertical Brand — slides in from right ── */}
-        <div
-          className="hidden shrink-0 flex-col items-center justify-end overflow-hidden md:flex"
-          style={{ width: "clamp(70px, 10vw, 130px)" }}
-        >
-          {/* This wrapper is what GSAP animates (x: 100% → 0) */}
-          <div ref={brandWrapRef} className="flex items-center justify-center w-full pb-2">
+        <div className="hidden shrink-0 flex-col items-center justify-end overflow-hidden md:flex" style={{ width: "clamp(70px, 10vw, 130px)" }}>
+          <div ref={brandWrapRef} className="flex w-full items-center justify-center pb-2">
             <h2
               ref={brandRef}
               className="select-none text-[#1e2e69] [writing-mode:vertical-rl]"
@@ -215,16 +165,10 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* ── Mobile ── */}
-      <div className="flex items-center justify-between px-4 pb-4 pt-2 md:hidden">
-        <h2 className="text-[1.8rem] font-light text-[#1e2e69]" style={{ fontFamily: "'Helvetica Neue', Arial, sans-serif" }}>
-          Be.Guardit
-        </h2>
-        <button className="border border-[#1e2e69] px-3 py-1.5 text-xs font-medium tracking-wide text-[#1e2e69]">
-          ↓ Scroll Down
-        </button>
+      <div className="flex items-center justify-between px-4 pb-4 pt-3 md:hidden">
+        <h2 className="text-[1.8rem] font-light text-[#1e2e69]">CMSNP</h2>
       </div>
-    </div>
+    </section>
   );
 };
 
